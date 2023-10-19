@@ -29,6 +29,40 @@ async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
+
+    const productCollection = client.db("brandDB").collection("products");
+
+    //get operation
+    app.get('/products', async (req, res) => {
+      const cursor = productCollection.find();
+      const result = await cursor.toArray();
+      res.send(result);
+    })
+
+
+
+    //post product or creat product
+    app.post('/products', async (req, res) => {
+      const newProduct = req.body;
+      console.log(newProduct);
+      const result = await productCollection.insertOne(newProduct);
+      res.send(result);
+    })
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
@@ -46,10 +80,10 @@ run().catch(console.dir);
 
 
 
-app.get('/', (req, res)=>{
-    res.send('Brand shop server is running')
+app.get('/', (req, res) => {
+  res.send('Brand shop server is running')
 })
 
-app.listen(port, ()=>{
-    console.log(`Brand shop server is listening on ${port}`);
+app.listen(port, () => {
+  console.log(`Brand shop server is listening on ${port}`);
 })
