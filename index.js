@@ -31,6 +31,7 @@ async function run() {
     await client.connect();
 
     const productCollection = client.db("brandDB").collection("products");
+    const userCollection = client.db("brandDB").collection("users")
 
     //get operation
     app.get('/products', async (req, res) => {
@@ -56,6 +57,30 @@ async function run() {
         _id: new ObjectId(id)
       }
       const result = await productCollection.deleteOne(query);
+      res.send(result);
+    })
+
+
+
+
+
+
+
+
+    //product user related
+
+    //get
+    app.get('/users', async(req,res)=>{
+      const cursor = userCollection.find();
+      const result = await cursor.toArray();
+      res.send(result);
+    })
+
+    //post
+    app.post('/users', async (req, res) => {
+      const newUser = req.body;
+      console.log(newUser);
+      const result = await userCollection.insertOne(newUser);
       res.send(result);
     })
 
