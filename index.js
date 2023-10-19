@@ -67,10 +67,10 @@ async function run() {
 
 
 
-    //product user related
+    // user related
 
     //get
-    app.get('/users', async(req,res)=>{
+    app.get('/users', async (req, res) => {
       const cursor = userCollection.find();
       const result = await cursor.toArray();
       res.send(result);
@@ -81,6 +81,21 @@ async function run() {
       const newUser = req.body;
       console.log(newUser);
       const result = await userCollection.insertOne(newUser);
+      res.send(result);
+    })
+
+    //patch or update
+    app.patch('/users', async (req, res) => {
+      const user = req.body;
+      const filter = {
+        email: user.email
+      }
+      const updatedDocument = {
+        $set: {
+          lastLoggedAtTime: user.lastLoggedAtTime
+        }
+      }
+      const result = await userCollection.updateOne(filter, updatedDocument);
       res.send(result);
     })
 
