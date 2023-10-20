@@ -14,7 +14,7 @@ app.use(express.json());
 
 //database
 
-const uri = "mongodb+srv://anikdev100:LdZ6DtFsJbrMxdOR@cluster0.yx9wbzb.mongodb.net/?retryWrites=true&w=majority";
+const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.yx9wbzb.mongodb.net/?retryWrites=true&w=majority`;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
@@ -28,7 +28,7 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
-    await client.connect();
+    // await client.connect();
 
     const productCollection = client.db("brandDB").collection("products");
     const userCollection = client.db("brandDB").collection("users")
@@ -36,7 +36,7 @@ async function run() {
 
 
 
-    //add to cart and my cart related
+    //add to cart and my cart related collection
     //get operation
     app.get('/products', async (req, res) => {
       const cursor = productCollection.find();
@@ -62,7 +62,7 @@ async function run() {
       res.send(result);
     })
 
-    //all products related
+    //all products related collection
 
     //get operation
     app.get('/allproducts', async (req, res) => {
@@ -115,13 +115,7 @@ async function run() {
     })
 
 
-
-
-
-
-
-
-    // user related
+    // user related collection
 
     //get
     app.get('/users', async (req, res) => {
@@ -156,19 +150,8 @@ async function run() {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
     // Send a ping to confirm a successful connection
-    await client.db("admin").command({ ping: 1 });
+    // await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
   } finally {
     // Ensures that the client will close when you finish/error
