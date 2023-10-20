@@ -32,15 +32,17 @@ async function run() {
 
     const productCollection = client.db("brandDB").collection("products");
     const userCollection = client.db("brandDB").collection("users")
+    const allProductsCollection = client.db("brandDB").collection("allproducts");
 
+
+
+    //add to cart and my cart related
     //get operation
     app.get('/products', async (req, res) => {
       const cursor = productCollection.find();
       const result = await cursor.toArray();
       res.send(result);
     })
-
-
 
     //post product or creat product
     app.post('/products', async (req, res) => {
@@ -57,6 +59,58 @@ async function run() {
         _id: new ObjectId(id)
       }
       const result = await productCollection.deleteOne(query);
+      res.send(result);
+    })
+
+    //all products related
+
+    //get operation
+    app.get('/allproducts', async (req, res) => {
+      const cursor = allProductsCollection.find();
+      const result = await cursor.toArray();
+      res.send(result);
+    })
+
+    app.get('/allproducts/:id', async (req, res) => {
+      const id = req.params.id;
+      const query = {
+        _id: new ObjectId(id)
+      }
+      const result = await allProductsCollection.findOne(query);
+      res.send(result);
+    })
+
+
+    //post
+    app.post('/allproducts', async (req, res) => {
+      const newAllProducts = req.body;
+      console.log(newAllProducts);
+      const result = await allProductsCollection.insertOne(newAllProducts);
+      res.send(result);
+    })
+
+    //product update
+    app.put('/allproducts/:id', async (req, res) => {
+      const id = req.params.id;
+      const filter = {
+        _id: new ObjectId(id)
+      }
+      const options = {
+        upsert: true
+      }
+      const updatedProduct = req.body;
+      const product = {
+        $set: {
+          product_image: updatedProduct.product_image,
+          product_name: updatedProduct.product_name,
+          product_brand: updatedProduct.product_brand,
+          product_type: updatedProduct.product_type,
+          product_price: updatedProduct.product_price,
+          product_details: updatedProduct.product_details,
+          product_rating: updatedProduct.product_rating
+        }
+      }
+      const result = await allProductsCollection.updateOne(filter, product, options);
       res.send(result);
     })
 
